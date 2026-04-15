@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Visibility Strategist — Parcel Perform</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#09090f;--bg2:#0f0f1a;--bg3:#14141f;--bg4:#1a1a28;
+  --border:#1e1e30;--border2:#2a2a40;
+  --purple:#7c6ff7;--purple-dim:#2a2060;--purple-text:#b0a0ff;
+  --teal:#4ecdc4;--teal-dim:#0f2a20;--teal-text:#6ee8e0;
+  --red:#ff6b6b;--amber:#ffaa44;
+  --text:#e8e8f0;--text2:#aaaabc;--text3:#666680;--text4:#333350;
+  --mono:'DM Mono',monospace;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:13px;height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+
+/* TOP BAR */
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;height:46px;gap:20px;flex-shrink:0;}
+.logo{font-size:13px;font-weight:600;color:#fff;display:flex;align-items:center;gap:5px;}
+.logo-arrow{color:var(--purple);}
+.nav{display:flex;gap:2px;margin-left:6px;}
+.nav-item{padding:5px 11px;border-radius:6px;font-size:11.5px;color:var(--text3);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.nav-item:hover{background:var(--bg4);color:var(--text2);}
+.nav-item.active{background:var(--border);color:#fff;}
+.brand-pill{margin-left:auto;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:3px 11px;font-size:11px;color:var(--text2);display:flex;align-items:center;gap:5px;}
+.brand-dot{width:7px;height:7px;border-radius:50%;background:var(--purple);}
+
+/* BODY */
+.body{display:flex;flex:1;overflow:hidden;}
+
+/* SIDEBAR */
+.sidebar{width:44px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:6px;flex-shrink:0;}
+.si{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text4);font-size:13px;transition:all .15s;}
+.si:hover{background:var(--border);color:var(--text2);}
+.si.active{background:var(--purple-dim);color:var(--purple-text);}
+
+/* MAIN DASHBOARD */
+.main{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0;}
+.main::-webkit-scrollbar{width:3px;}
+.main::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+
+.page-hdr{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.page-title{font-size:15px;font-weight:600;color:#fff;}
+.page-sub{font-size:10px;color:var(--text3);margin-top:2px;}
+.filters{display:flex;gap:6px;}
+.fbtn{background:var(--bg4);border:1px solid var(--border2);border-radius:20px;padding:4px 11px;font-size:10.5px;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;}
+
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.mc{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:12px 14px;transition:border-color .4s,box-shadow .4s;}
+.mc.pulse{border-color:var(--purple);box-shadow:0 0 0 2px rgba(124,111,247,.2);}
+.mc-label{font-size:9.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
+.mc-val{font-size:20px;font-weight:600;color:#fff;font-family:var(--mono);}
+.mc-delta{font-size:10.5px;margin-left:5px;font-family:'DM Sans',sans-serif;font-weight:500;}
+.mc-sub{font-size:9.5px;color:var(--text4);margin-top:3px;}
+.up{color:var(--teal);} .dn{color:var(--red);} .warn{color:var(--amber);}
+
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:12px 14px;transition:border-color .4s,box-shadow .4s;}
+.card.pulse{border-color:var(--purple);box-shadow:0 0 0 2px rgba(124,111,247,.2);}
+.card-title{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;}
+
+.rr{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bg4);}
+.rr:last-child{border-bottom:none;}
+.rn{font-size:10px;color:var(--text4);width:14px;text-align:center;font-family:var(--mono);}
+.ry{background:var(--purple-dim);border:1px solid #4a3fa0;border-radius:3px;padding:1px 5px;font-size:9px;color:var(--purple-text);}
+.rname{font-size:11.5px;color:var(--text2);flex:1;}
+.rname.you{color:var(--purple-text);font-weight:500;}
+.rscore{font-size:10.5px;font-family:var(--mono);color:var(--text3);}
+
+.llm-row{display:flex;gap:6px;margin-bottom:8px;}
+.llm-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:8px;text-align:center;}
+.llm-name{font-size:9.5px;color:var(--text3);margin-bottom:5px;}
+.badge{display:inline-block;padding:2px 7px;border-radius:9px;font-size:8.5px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;}
+.b-ok{background:#0f3d2a;color:var(--teal);border:1px solid #1a6644;}
+.b-rank{background:var(--purple-dim);color:var(--purple-text);border:1px solid #4a3fa0;}
+.b-miss{background:#3d0f0f;color:var(--red);border:1px solid #661a1a;}
+.llm-det{font-size:8.5px;color:#555570;margin-top:3px;}
+
+.pr{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--bg4);}
+.pr:last-child{border-bottom:none;}
+.pt{font-size:10.5px;color:var(--text2);flex:1;line-height:1.4;}
+.pcat{font-size:8.5px;color:var(--text3);white-space:nowrap;}
+.llm-pill{font-size:8px;padding:1px 5px;border-radius:3px;font-weight:500;white-space:nowrap;font-family:var(--mono);}
+.llm-pill.ok{background:#0f3d2a;color:var(--teal);border:1px solid #1a6644;}
+.llm-pill.miss{background:#1e1e2e;color:var(--text3);border:1px solid var(--border2);}
+
+/* OPS TABLE */
+.ops-tbl{width:100%;border-collapse:collapse;font-size:10px;margin:6px 0 3px;table-layout:fixed;}
+.ops-tbl th{font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;padding:3px 5px;text-align:left;border-bottom:1px solid var(--border2);white-space:nowrap;}
+.ops-tbl td{padding:5px 5px;border-bottom:1px solid var(--bg4);color:var(--text2);word-break:break-word;}
+.ops-tbl tr:last-child td{border-bottom:none;}
+/* column widths for the in-bubble ops table */
+.ops-tbl col.c-sig{width:38%;}
+.ops-tbl col.c-score{width:20%;}
+.ops-tbl col.c-trend{width:20%;}
+.ops-tbl col.c-impact{width:12%;}
+.ops-tbl col.c-owner{width:0;display:none;}
+.ops-src{font-size:8.5px;color:var(--text4);display:flex;align-items:center;gap:4px;margin-top:2px;}
+.ops-dot{width:5px;height:5px;border-radius:50%;}
+
+/* ASSISTANT TOGGLE BUTTON */
+.asst-toggle{margin-left:12px;display:flex;align-items:center;gap:7px;background:var(--purple-dim);border:1px solid #4a3fa0;border-radius:20px;padding:5px 12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;color:var(--purple-text);transition:all .2s;position:relative;}
+.asst-toggle:hover{background:#3a2a70;border-color:#6a5fc0;}
+.asst-toggle-dot{width:7px;height:7px;border-radius:50%;background:var(--purple);animation:asstPulse 2s ease-in-out infinite;}
+.asst-toggle-badge{background:#4a3fa0;border-radius:10px;padding:1px 7px;font-size:9px;color:#d0c8ff;}
+@keyframes asstPulse{0%,100%{box-shadow:0 0 0 0 rgba(124,111,247,.6);}50%{box-shadow:0 0 0 5px rgba(124,111,247,0);}}
+
+/* ASSISTANT PANEL */
+.asst{width:0;background:#0b0b16;border-left:0 solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;transition:width .35s cubic-bezier(.4,0,.2,1),border-left-width .35s;}
+.asst.open{width:310px;border-left:1px solid var(--border);}
+.asst-hdr{padding:12px 14px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px;flex-shrink:0;min-width:310px;}
+.asst-icon{width:26px;height:26px;border-radius:7px;background:var(--purple-dim);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;color:var(--purple-text);}
+.asst-title{font-size:12.5px;font-weight:600;color:#fff;white-space:nowrap;}
+.asst-sub{font-size:9.5px;color:var(--text3);white-space:nowrap;}
+.new-badge{margin-left:auto;background:var(--purple-dim);border:1px solid #4a3fa0;border-radius:9px;padding:2px 7px;font-size:8.5px;color:var(--purple-text);font-weight:500;white-space:nowrap;}
+
+.brief{padding:10px 12px;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0;min-width:310px;}
+.brief-label{font-size:8.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:7px;display:flex;align-items:center;gap:5px;}
+.brief-dot{width:5px;height:5px;border-radius:50%;background:var(--purple);}
+.sig{display:flex;align-items:flex-start;gap:7px;padding:7px 8px;border-radius:7px;margin-bottom:5px;cursor:pointer;border:1px solid transparent;transition:all .15s;}
+.sig:last-child{margin-bottom:0;}
+.sig:hover{background:var(--bg4);border-color:var(--border2);}
+.sig.urgent{background:#160a0a;border-color:#3a1515;}
+.sig.warn-s{background:#161009;border-color:#3a2c09;}
+.sig.ops-s{background:#090f14;border-color:#0a2535;}
+.sig.info-s{background:#090f14;border-color:#0a2535;}
+.sicon{font-size:11px;width:18px;height:18px;display:flex;align-items:center;justify-content:center;border-radius:4px;flex-shrink:0;margin-top:1px;}
+.si-u{background:#3d0f0f;color:var(--red);}
+.si-w{background:#3d2e0a;color:var(--amber);}
+.si-o{background:#0a2535;color:var(--teal);}
+.stext{font-size:10.5px;color:var(--text2);line-height:1.4;flex:1;}
+.stext strong{color:#fff;font-weight:500;}
+.sarrow{font-size:9px;color:var(--text4);margin-top:2px;}
+
+/* CHAT */
+.chat-area{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:10px;min-width:310px;}
+.chat-area::-webkit-scrollbar{width:2px;}
+.chat-area::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.msg{display:flex;flex-direction:column;gap:3px;}
+.msg-label{font-size:8.5px;color:var(--text4);text-transform:uppercase;letter-spacing:.05em;}
+.bubble{background:var(--bg4);border:1px solid var(--border2);border-radius:9px;border-top-left-radius:2px;padding:9px 11px;font-size:11.5px;color:var(--text2);line-height:1.55;}
+.bubble p{margin-bottom:5px;}
+.bubble p:last-child{margin-bottom:0;}
+.bubble-user{background:#160f2a;border-color:#3a2e60;border-top-left-radius:9px;border-top-right-radius:2px;}
+
+/* FOOTNOTES */
+.fn{display:inline-flex;align-items:center;justify-content:center;background:var(--purple-dim);color:var(--purple-text);font-size:7.5px;width:13px;height:13px;border-radius:3px;text-align:center;font-weight:600;vertical-align:middle;margin:0 1px;cursor:pointer;font-family:var(--mono);transition:background .1s;}
+.fn:hover{background:#4a3fa0;}
+.fn.research{background:var(--teal-dim);color:var(--teal-text);}
+.fn.research:hover{background:#1a4a40;}
+.fn-list{margin-top:7px;border-top:1px solid var(--border2);padding-top:7px;display:flex;flex-direction:column;gap:3px;}
+.fn-item{display:flex;align-items:flex-start;gap:5px;font-size:9.5px;color:var(--text3);line-height:1.4;}
+.fn-num{font-family:var(--mono);font-size:8px;width:13px;height:13px;border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:600;}
+.fn-data{background:var(--border);color:var(--purple);}
+.fn-res{background:var(--teal-dim);color:var(--teal-text);}
+
+/* EVIDENCE CHIP */
+.evidence-block{margin-top:7px;background:var(--teal-dim);border:1px solid #1a4a40;border-radius:7px;padding:7px 9px;}
+.ev-label{font-size:8.5px;font-weight:600;color:var(--teal-text);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;display:flex;align-items:center;gap:4px;}
+.ev-item{font-size:10px;color:#88d8d4;line-height:1.45;margin-bottom:3px;}
+.ev-item:last-child{margin-bottom:0;}
+.ev-source{font-size:8.5px;color:var(--text3);margin-top:1px;}
+
+/* OPS SIGNAL BLOCK */
+.ops-block{margin-top:7px;background:#0a1f14;border:1px solid #1a4a30;border-radius:7px;padding:7px 9px;}
+.ops-label{font-size:8.5px;font-weight:600;color:var(--teal-text);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;display:flex;align-items:center;gap:5px;}
+
+/* HANDOFF BUTTONS */
+.handoff{margin-top:8px;background:#0a0a18;border:1px solid var(--border2);border-radius:8px;overflow:hidden;}
+.handoff-label{padding:6px 10px;font-size:8.5px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);background:var(--bg3);}
+.hb{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-bottom:1px solid var(--border);cursor:pointer;font-size:10.5px;font-weight:500;transition:all .15s;font-family:'DM Sans',sans-serif;border-left:none;border-right:none;border-top:none;border-radius:0;}
+.hb:last-child{border-bottom:none;}
+.hb-ops{color:var(--teal-text);background:transparent;}
+.hb-ops:hover{background:#08180f;}
+.hb-pp{color:var(--purple-text);background:transparent;}
+.hb-pp:hover{background:#0a0818;}
+.hb-sub{font-size:8.5px;font-weight:400;opacity:.6;margin-top:1px;}
+.hb-arr{font-size:11px;opacity:.5;}
+
+/* CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
+.chip{background:var(--bg3);border:1px solid var(--border2);border-radius:18px;padding:4px 9px;font-size:9.5px;color:var(--text2);cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;}
+.chip:hover{border-color:var(--purple);color:var(--purple-text);background:#100d20;}
+
+/* INPUT */
+.input-area{padding:8px 12px 10px;border-top:1px solid var(--border);flex-shrink:0;min-width:310px;}
+.input-wrap{display:flex;align-items:center;background:var(--bg3);border:1px solid var(--border2);border-radius:7px;padding:5px 9px;gap:7px;}
+.input-wrap:focus-within{border-color:var(--purple);}
+.inp{flex:1;background:none;border:none;outline:none;font-size:11px;color:var(--text);font-family:'DM Sans',sans-serif;}
+.inp::placeholder{color:var(--text4);}
+.send{width:22px;height:22px;border-radius:5px;background:var(--purple);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;}
+.send:hover{background:#9d8ff7;}
+.send:disabled{background:var(--border2);cursor:not-allowed;}
+
+/* LOADING */
+.typing{display:flex;gap:3px;align-items:center;padding:4px 0;}
+.typing span{width:5px;height:5px;border-radius:50%;background:var(--purple);animation:blink 1.2s infinite;}
+.typing span:nth-child(2){animation-delay:.2s;}
+.typing span:nth-child(3){animation-delay:.4s;}
+@keyframes blink{0%,80%,100%{opacity:.2;}40%{opacity:1;}}
+
+/* TOOLTIP */
+.tt{display:none;position:fixed;background:var(--bg3);border:1px solid var(--border2);border-radius:7px;padding:7px 9px;font-size:10.5px;color:var(--text2);max-width:190px;z-index:999;pointer-events:none;line-height:1.4;box-shadow:0 4px 20px rgba(0,0,0,.6);}
+.tt.show{display:block;}
+
+/* PULSE ANIM */
+.pulse-anim{animation:cardPulse 1.6s ease-out;}
+@keyframes cardPulse{0%{border-color:var(--purple);box-shadow:0 0 0 2px rgba(124,111,247,.25);}100%{border-color:var(--border);box-shadow:none;}}
+
+/* RADAR SVG */
+/* TRUST SIGNALS TABS */
+.ts-tab{padding:5px 10px;font-size:10.5px;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;}
+.ts-tab:hover{color:var(--text2);}
+.ts-tab.active{color:#fff;border-bottom-color:var(--purple);font-weight:500;}
+
+/* TRAIT ROWS */
+.trait-row{display:flex;align-items:center;gap:7px;font-size:10.5px;}
+.trait-name{width:90px;color:var(--text2);flex-shrink:0;}
+.trait-bar-wrap{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.trait-bar{height:100%;border-radius:3px;background:var(--purple);opacity:.8;}
+.trait-rank{font-size:9.5px;width:60px;text-align:right;color:var(--text3);}
+
+/* TRUST ROWS */
+.trust-row{display:flex;align-items:center;gap:7px;font-size:10.5px;padding:4px 0;border-bottom:1px solid var(--bg4);}
+.trust-row:last-child{border-bottom:none;}
+.trust-label{flex:1;color:var(--text2);}
+.trust-score{font-family:var(--mono);font-size:10px;white-space:nowrap;}
+.trust-tag{font-size:8.5px;padding:1px 6px;border-radius:4px;font-weight:500;white-space:nowrap;}
+.trust-tag.danger{background:#3d0f0f;color:var(--red);border:1px solid #661a1a;}
+.trust-tag.warn{background:#3d2e0a;color:var(--amber);border:1px solid #664a0a;}
+
+/* BRAND DOT SMALL */
+.brand-dot-sm{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:2px;vertical-align:middle;}
+
+/* PROMPT BUTTON */
+.prompt-btn{background:transparent;border:1px solid var(--border2);border-radius:6px;padding:3px 8px;font-size:9.5px;color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;margin-left:auto;}
+.prompt-btn:hover{border-color:var(--purple);color:var(--purple-text);background:var(--purple-dim);}
+
+/* MODAL OVERLAY */
+.sp-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;align-items:center;justify-content:center;}
+.sp-overlay.show{display:flex;}
+.sp-modal{background:#0f0f1a;border:1px solid var(--border2);border-radius:12px;width:680px;max-width:95vw;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;}
+.sp-modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);}
+.sp-close{background:transparent;border:none;color:var(--text3);font-size:14px;cursor:pointer;padding:4px;border-radius:4px;transition:color .15s;}
+.sp-close:hover{color:#fff;}
+.sp-tabs-row{display:flex;border-bottom:1px solid var(--border);padding:0 16px;background:var(--bg2);}
+.sp-tab{padding:8px 12px;font-size:11px;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;white-space:nowrap;}
+.sp-tab:hover{color:var(--text2);}
+.sp-tab.active{color:#fff;border-bottom-color:var(--purple);font-weight:500;}
+.sp-body{padding:16px;overflow-y:auto;flex:1;}
+.sp-body::-webkit-scrollbar{width:4px;}
+.sp-body::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.sp-panel{display:none;}
+.sp-panel.active{display:block;}
+.sp-section-label{font-size:9.5px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.sp-code{background:var(--bg3);border:0.5px solid var(--border2);border-radius:8px;padding:12px 14px;font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.7;white-space:pre-wrap;}
+.sp-kw{color:var(--purple-text);font-weight:500;}
+.sp-str{color:var(--teal-text);}
+.sp-comment{color:var(--text3);font-style:italic;}
+.sp-num{color:var(--amber);}
+.sp-key{color:#fff;font-weight:500;}
+.sp-schema-card{background:var(--bg3);border:0.5px solid var(--border2);border-radius:8px;padding:10px 12px;}
+.sp-schema-hdr{font-size:10.5px;font-weight:500;margin-bottom:8px;}
+.sp-field{display:flex;justify-content:space-between;align-items:baseline;padding:3px 0;border-bottom:0.5px solid var(--border);font-size:10.5px;}
+.sp-field:last-child{border-bottom:none;}
+.sp-fname{font-family:var(--mono);font-size:10px;color:var(--text2);}
+.sp-ftype{font-size:9.5px;color:var(--text3);}
+.sp-priority-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:8px;}
+.sp-pnum{width:20px;height:20px;border-radius:50%;background:var(--bg4);border:0.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:var(--text2);flex-shrink:0;margin-top:1px;}
+.sp-ptitle{font-size:11.5px;font-weight:500;color:#fff;margin-bottom:3px;}
+.sp-pdesc{font-size:10.5px;color:var(--text2);line-height:1.5;margin-bottom:5px;}
+.sp-pex{font-size:10px;font-family:var(--mono);color:var(--text3);background:var(--bg4);border-left:2px solid var(--purple);padding:3px 8px;border-radius:0 4px 4px 0;}
+.sp-contract-row{display:grid;grid-template-columns:100px 1fr;gap:10px;padding:8px 10px;border-bottom:0.5px solid var(--border);font-size:10.5px;}
+.sp-contract-row:last-child{border-bottom:none;}
+.sp-contract-key{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--purple-text);}
+.sp-contract-val{color:var(--text2);line-height:1.5;}
+.sp-constraint{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border);font-size:10.5px;color:var(--text2);line-height:1.5;}
+.sp-cx{font-size:11px;color:var(--text3);flex-shrink:0;margin-top:1px;}
+
+svg text{font-family:var(--mono);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo"><span class="logo-arrow">&#9658;</span>parcelperform</div>
+  <nav class="nav">
+    <div class="nav-item">Overview</div>
+    <div class="nav-item active">AI Commerce Visibility</div>
+    <div class="nav-item">Decision Intelligence</div>
+    <div class="nav-item">Post-Purchase</div>
+  </nav>
+  <div class="brand-pill"><div class="brand-dot"></div>NovaSport</div>
+  <button class="asst-toggle" id="asstToggle" onclick="toggleAsst()">
+    <div class="asst-toggle-dot"></div>
+    <span>AI Visibility Strategist</span>
+    <span class="asst-toggle-badge">3 signals</span>
+  </button>
+</div>
+
+<div class="body">
+  <div class="sidebar">
+    <div class="si active">&#9681;</div>
+    <div class="si">&#9783;</div>
+    <div class="si">&#9776;</div>
+    <div class="si">&#9878;</div>
+    <div style="margin-top:auto"><div class="si">&#9881;</div></div>
+  </div>
+
+  <div class="main" id="main">
+    <div class="page-hdr">
+      <div>
+        <div class="page-title">AI Commerce Visibility</div>
+        <div class="page-sub">Updated weekly &middot; Last run: Mon 14 Apr 2026</div>
+      </div>
+      <div class="filters">
+        <button class="fbtn">United States &#9660;</button>
+        <button class="fbtn">All LLMs &#9660;</button>
+        <button class="fbtn">Weekly &#9660;</button>
+      </div>
+    </div>
+
+    <div class="metrics">
+      <div class="mc" id="mVis">
+        <div class="mc-label">Visibility Score</div>
+        <div class="mc-val">47.3%<span class="mc-delta dn">&#9660; 4.1%</span></div>
+        <div class="mc-sub">Avg across 4 categories</div>
+      </div>
+      <div class="mc" id="mRank">
+        <div class="mc-label">LLM Ranking</div>
+        <div class="mc-val">#4<span class="mc-delta dn">&#9660; 2</span></div>
+        <div class="mc-sub">Running Shoes &middot; Perplexity</div>
+      </div>
+      <div class="mc" id="mTrust">
+        <div class="mc-label">Brand Trust</div>
+        <div class="mc-val">61.2<span class="mc-delta warn">&#9650; 0.8</span></div>
+        <div class="mc-sub">Delivery sentiment index</div>
+      </div>
+    </div>
+
+    <div class="charts">
+      <div class="card" id="cRank">
+        <div class="card-title">Competitor Ranking &mdash; Running Shoes</div>
+        <div class="rr"><div class="rn">1</div><div class="rname">Brooks</div><div class="rscore">78.4%</div><div class="mc-delta up" style="font-size:9px">&#9650;</div></div>
+        <div class="rr"><div class="rn">2</div><div class="rname">ASICS</div><div class="rscore">71.2%</div><div class="mc-delta up" style="font-size:9px">&#9650;</div></div>
+        <div class="rr"><div class="rn">3</div><div class="rname">New Balance</div><div class="rscore">64.8%</div><div style="font-size:9px;color:var(--text3)">&#9644;</div></div>
+        <div class="rr" style="background:#12122a;border-radius:5px;padding:6px;margin:0 -2px">
+          <div class="rn" style="color:var(--purple)">4</div>
+          <div class="rname you">NovaSport <span class="ry">you</span></div>
+          <div class="rscore" style="color:var(--purple-text)">47.3%</div>
+          <div class="mc-delta dn" style="font-size:9px">&#9660;</div>
+        </div>
+        <div class="rr"><div class="rn">5</div><div class="rname">Puma</div><div class="rscore">44.1%</div><div class="mc-delta up" style="font-size:9px">&#9650;</div></div>
+      </div>
+
+      <div class="card" id="cLLM">
+        <div class="card-title">Coverage by LLM</div>
+        <div class="llm-row">
+          <div class="llm-card"><div class="llm-name">ChatGPT</div><div class="badge b-ok">Ranked #3</div><div class="llm-det">Running Shoes &middot; 6 competitors</div></div>
+          <div class="llm-card"><div class="llm-name">Gemini</div><div class="badge b-miss">Ranked #5</div><div class="llm-det">Dropped from #4</div></div>
+          <div class="llm-card"><div class="llm-name">Perplexity</div><div class="badge b-miss">Dropped</div><div class="llm-det">Not in top 5</div></div>
+        </div>
+        <div class="card-title" style="margin-bottom:7px;display:flex;justify-content:space-between;align-items:center">
+          Active Prompts
+          <span style="font-size:9px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">Visible on</span>
+        </div>
+        <div class="pr">
+          <div class="pt">Best running shoes for marathon training?</div>
+          <div style="display:flex;gap:3px">
+            <span class="llm-pill ok">GPT</span>
+            <span class="llm-pill ok">Gem</span>
+            <span class="llm-pill miss">Pplx</span>
+          </div>
+        </div>
+        <div class="pr">
+          <div class="pt">Where to buy lightweight trail runners in US?</div>
+          <div style="display:flex;gap:3px">
+            <span class="llm-pill ok">GPT</span>
+            <span class="llm-pill miss">Gem</span>
+            <span class="llm-pill miss">Pplx</span>
+          </div>
+        </div>
+        <div class="pr">
+          <div class="pt">Running shoe with fastest delivery time?</div>
+          <div style="display:flex;gap:3px">
+            <span class="llm-pill miss">GPT</span>
+            <span class="llm-pill miss">Gem</span>
+            <span class="llm-pill miss">Pplx</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="charts">
+      <div class="card" id="cSent">
+        <div class="card-title">Sentiment Radar &mdash; Running Shoes</div>
+        <svg viewBox="0 0 300 210" style="width:100%;height:auto">
+          <!--
+            Centre: 150, 105
+            5 axes at 72° intervals, starting top (270°):
+            Top    (270°): 150, 105 - r*1   → label: MARKET PERF
+            Right  (342°): 150+r*sin72, 105-r*cos72 → SUSTAINABILITY
+            BR     (54°):  150+r*sin36, 105+r*cos36 → RELIABILITY (weak)
+            BL     (126°): 150-r*sin36, 105+r*cos36 → CUST EXPERIENCE
+            Left   (198°): 150-r*sin72, 105-r*cos72 → ACCESSIBILITY
+
+            sin72=0.951, cos72=0.309
+            sin36=0.588, cos36=0.809
+
+            Full radius = 70
+
+            NovaSport scores (out of 100):
+              MARKET PERF:     72  → r=50.4
+              SUSTAINABILITY:  68  → r=47.6
+              RELIABILITY:     45  → r=31.5  ← WEAKEST
+              CUST EXP:        65  → r=45.5
+              ACCESSIBILITY:   74  → r=51.8
+
+            Competitor avg scores:
+              MARKET PERF:     76  → r=53.2
+              SUSTAINABILITY:  71  → r=49.7
+              RELIABILITY:     62  → r=43.4
+              CUST EXP:        70  → r=49.0
+              ACCESSIBILITY:   73  → r=51.1
+
+            Grid rings at r=23.3(33%), r=46.7(67%), r=70(100%)
+          -->
+
+          <!-- grid rings -->
+          <polygon points="150,81.7 172.2,98.8 163.7,126.0 136.3,126.0 127.8,98.8" fill="none" stroke="#1e1e30" stroke-width=".5"/>
+          <polygon points="150,58.3 194.5,92.4 177.4,147.1 122.6,147.1 105.5,92.4" fill="none" stroke="#1e1e30" stroke-width=".5"/>
+          <polygon points="150,35 216.6,83.4 191.0,163.3 109.0,163.3 83.4,83.4" fill="none" stroke="#1e1e30" stroke-width="1"/>
+
+          <!-- axes -->
+          <line x1="150" y1="105" x2="150" y2="35"    stroke="#1e1e30" stroke-width=".5"/>
+          <line x1="150" y1="105" x2="216.6" y2="83.4" stroke="#1e1e30" stroke-width=".5"/>
+          <line x1="150" y1="105" x2="191.0" y2="163.3" stroke="#1e1e30" stroke-width=".5"/>
+          <line x1="150" y1="105" x2="109.0" y2="163.3" stroke="#1e1e30" stroke-width=".5"/>
+          <line x1="150" y1="105" x2="83.4"  y2="83.4" stroke="#1e1e30" stroke-width=".5"/>
+
+          <!-- competitor avg polygon (teal dashed) -->
+          <!-- MP:53.2→150,51.8 | SU:49.7→196.3,89.7 | RE:43.4→175.5,140.1 | CE:49.0→121.2,144.6 | AC:51.1→100.5,89.2 -->
+          <polygon points="150,51.8 196.3,89.7 175.5,140.1 121.2,144.6 100.5,89.2"
+            fill="rgba(78,205,196,.07)" stroke="#4ecdc4" stroke-width="1" stroke-dasharray="3,2"/>
+
+          <!-- NovaSport polygon (purple) -->
+          <!-- MP:50.4→150,54.6 | SU:47.6→195.3,90.3 | RE:31.5→168.5,130.5 | CE:45.5→126.8,141.8 | AC:51.8→100.8,88.9 -->
+          <polygon points="150,54.6 195.3,90.3 168.5,130.5 126.8,141.8 100.8,88.9"
+            fill="rgba(124,111,247,.13)" stroke="#7c6ff7" stroke-width="1.5"/>
+
+          <!-- score dots on NovaSport polygon -->
+          <circle cx="150"  cy="54.6"  r="2.5" fill="#7c6ff7"/>
+          <circle cx="195.3" cy="90.3" r="2.5" fill="#7c6ff7"/>
+          <circle cx="168.5" cy="130.5" r="2.5" fill="#ff6b6b"/> <!-- red = weak -->
+          <circle cx="126.8" cy="141.8" r="2.5" fill="#7c6ff7"/>
+          <circle cx="100.8" cy="88.9" r="2.5" fill="#7c6ff7"/>
+
+          <!-- labels — pushed well outside the outer ring -->
+          <text x="150" y="25"    text-anchor="middle" font-size="7" fill="#888">MARKET PERFORMANCE</text>
+          <text x="150" y="33"    text-anchor="middle" font-size="6.5" fill="#555">72%</text>
+
+          <text x="232" y="80"   text-anchor="start"  font-size="7" fill="#888">SUSTAINABILITY</text>
+          <text x="232" y="88"   text-anchor="start"  font-size="6.5" fill="#555">68%</text>
+
+          <text x="200" y="177"  text-anchor="middle" font-size="7" fill="#ff6b6b">RELIABILITY &#9660;</text>
+          <text x="200" y="185"  text-anchor="middle" font-size="6.5" fill="#cc4444">45% · weak</text>
+
+          <text x="100" y="177"  text-anchor="middle" font-size="7" fill="#888">CUSTOMER</text>
+          <text x="100" y="185"  text-anchor="middle" font-size="7" fill="#888">EXPERIENCE</text>
+          <text x="100" y="193"  text-anchor="middle" font-size="6.5" fill="#555">65%</text>
+
+          <text x="66"  y="80"   text-anchor="end"    font-size="7" fill="#888">ACCESSIBILITY</text>
+          <text x="66"  y="88"   text-anchor="end"    font-size="6.5" fill="#555">74%</text>
+
+          <!-- legend -->
+          <circle cx="72" cy="202" r="3" fill="#7c6ff7"/>
+          <text x="77" y="205" font-size="7" fill="#888">You</text>
+          <circle cx="100" cy="202" r="3" fill="#4ecdc4" opacity=".6"/>
+          <text x="105" y="205" font-size="7" fill="#666">Competitor avg</text>
+        </svg>
+      </div>
+
+      <div class="card" id="cOps">
+        <div style="display:flex;gap:0;margin-bottom:12px;border-bottom:1px solid var(--border)">
+          <div class="ts-tab active" onclick="switchTab('brand')" id="tab-brand">Brand</div>
+          <div class="ts-tab" onclick="switchTab('product')" id="tab-product">Product</div>
+          <div class="ts-tab" onclick="switchTab('trust')" id="tab-trust">Trust Signals</div>
+        </div>
+
+        <!-- BRAND TAB -->
+        <div id="panel-brand">
+          <div style="font-size:9.5px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">NovaSport &mdash; Running Shoes</div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <div class="trait-row">
+              <div class="trait-name">Delivery Speed</div>
+              <div class="trait-bar-wrap"><div class="trait-bar" style="width:45%;background:var(--red)"></div></div>
+              <div class="trait-rank dn">&#9660; dropping</div>
+            </div>
+            <div class="trait-row">
+              <div class="trait-name">Product Quality</div>
+              <div class="trait-bar-wrap"><div class="trait-bar" style="width:78%"></div></div>
+              <div class="trait-rank" style="color:var(--text3)">#2</div>
+            </div>
+            <div class="trait-row">
+              <div class="trait-name">Returns Policy</div>
+              <div class="trait-bar-wrap"><div class="trait-bar" style="width:60%;background:var(--amber)"></div></div>
+              <div class="trait-rank" style="color:var(--text3)">#3</div>
+            </div>
+            <div class="trait-row">
+              <div class="trait-name">Price Value</div>
+              <div class="trait-bar-wrap"><div class="trait-bar" style="width:72%"></div></div>
+              <div class="trait-rank" style="color:var(--text3)">#2</div>
+            </div>
+          </div>
+          <div class="ops-src" style="margin-top:8px"><div class="ops-dot" style="background:var(--purple)"></div>AI Commerce Visibility &mdash; Brand dimension</div>
+        </div>
+
+        <!-- PRODUCT TAB -->
+        <div id="panel-product" style="display:none">
+          <div style="font-size:9.5px;color:var(--text3);margin-bottom:8px;display:flex;align-items:center;gap:6px"><span style="background:var(--border2);padding:2px 7px;border-radius:4px;color:var(--text2)">NovaSport NS-Pro</span></div>
+          <table class="ops-tbl">
+            <thead><tr><th>Feature</th><th>Score</th><th>Product Rank</th><th>Top Brands</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>Cushioning</td>
+                <td><span style="color:var(--teal)">&#9679;</span> 88%</td>
+                <td style="color:var(--text2)">1st</td>
+                <td><span class="brand-dot-sm" style="background:#7c6ff7"></span><span class="brand-dot-sm" style="background:var(--teal)"></span><span class="brand-dot-sm" style="background:#ff9f7f"></span></td>
+              </tr>
+              <tr>
+                <td>Lightweight</td>
+                <td><span style="color:var(--amber)">&#9679;</span> 71%</td>
+                <td style="color:var(--text2)">3rd</td>
+                <td><span class="brand-dot-sm" style="background:var(--teal)"></span><span class="brand-dot-sm" style="background:#ff9f7f"></span><span class="brand-dot-sm" style="background:#7c6ff7"></span></td>
+              </tr>
+              <tr>
+                <td>Durability</td>
+                <td><span style="color:var(--teal)">&#9679;</span> 82%</td>
+                <td style="color:var(--text2)">2nd</td>
+                <td><span class="brand-dot-sm" style="background:#ff9f7f"></span><span class="brand-dot-sm" style="background:#7c6ff7"></span><span class="brand-dot-sm" style="background:var(--teal)"></span></td>
+              </tr>
+              <tr>
+                <td>Delivery Speed</td>
+                <td><span style="color:var(--red)">&#9679;</span> 45%</td>
+                <td style="color:var(--red)">5th &#9660;</td>
+                <td><span class="brand-dot-sm" style="background:var(--teal)"></span><span class="brand-dot-sm" style="background:#ff9f7f"></span><span class="brand-dot-sm" style="background:#888"></span></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="ops-src" style="margin-top:6px"><div class="ops-dot" style="background:var(--purple)"></div>AI Commerce Visibility &mdash; Product dimension</div>
+        </div>
+
+        <!-- TRUST SIGNALS TAB -->
+        <div id="panel-trust" style="display:none">
+          <div style="font-size:9.5px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Delivery trust signals this week</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div class="trust-row">
+              <div class="trust-label">EDD accuracy</div>
+              <div class="trust-score" style="color:var(--red)">67% <span class="dn">&#9660; 8pts</span></div>
+              <div class="trust-tag danger">At risk</div>
+            </div>
+            <div class="trust-row">
+              <div class="trust-label">On-time delivery</div>
+              <div class="trust-score" style="color:var(--red)">71% <span class="dn">&#9660; 5pts</span></div>
+              <div class="trust-tag danger">At risk</div>
+            </div>
+            <div class="trust-row">
+              <div class="trust-label">Return friction</div>
+              <div class="trust-score" style="color:var(--amber)">62/100</div>
+              <div class="trust-tag warn">Monitor</div>
+            </div>
+            <div class="trust-row">
+              <div class="trust-label">WISMO rate</div>
+              <div class="trust-score" style="color:var(--amber)">4.1% <span class="warn">&#9650; 0.6%</span></div>
+              <div class="trust-tag warn">Monitor</div>
+            </div>
+          </div>
+          <div class="ops-src" style="margin-top:8px"><div class="ops-dot" style="background:var(--teal)"></div>Sourced from Decision Intelligence &amp; Logistics Experience</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ASSISTANT PANEL -->
+  <div class="asst">
+    <div class="asst-hdr">
+      <div class="asst-icon">&#10024;</div>
+      <div>
+        <div class="asst-title">AI Visibility Strategist</div>
+        <div class="asst-sub">Weekly brief ready</div>
+      </div>
+      <button class="prompt-btn" onclick="openPrompt()" title="View system prompt">&#9881; Prompt</button>
+      <div class="new-badge">NEW</div>
+    </div>
+
+    <div class="brief">
+      <div class="brief-label"><div class="brief-dot"></div>This week &middot; 3 signals</div>
+      <div class="sig urgent" onclick="load('drop')">
+        <div class="sicon si-u">&#9660;</div>
+        <div class="stext"><strong>Dropped off Perplexity</strong> &mdash; First time out of top 5 in 6 weeks. EDD at 67%, feeding Reliability sentiment gap.</div>
+        <div class="sarrow">&#9654;</div>
+      </div>
+      <div class="sig warn-s" onclick="load('gemini')">
+        <div class="sicon si-w">&#9650;</div>
+        <div class="stext"><strong>Gemini slipped #4&#8594;#5</strong> &mdash; New this week. Brooks gained Runner's World citations.</div>
+        <div class="sarrow">&#9654;</div>
+      </div>
+      <div class="sig info-s" onclick="load('opportunity')">
+        <div class="sicon si-o">&#9670;</div>
+        <div class="stext"><strong>Trail Gear opportunity</strong> &mdash; Gap to #1 narrowed from 9pts to 6pts this week. Low competition.</div>
+        <div class="sarrow">&#9654;</div>
+      </div>
+    </div>
+
+    <div class="chat-area" id="chat">
+      <div class="msg">
+        <div class="msg-label">Strategist</div>
+        <div class="bubble">
+          <p>Tap a signal to dig in, or ask me anything about your visibility this week.</p>
+        </div>
+        <div class="chips">
+          <div class="chip" onclick="load('drop')">Why did Perplexity drop us?</div>
+          <div class="chip" onclick="load('ops')">What ops issues are hurting us?</div>
+          <div class="chip" onclick="sendLive('What should I tell my logistics team?')">What do I tell my logistics team?</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-area">
+      <div class="input-wrap">
+        <input class="inp" id="inp" placeholder="Ask about your visibility..." onkeydown="if(event.key==='Enter')handleSend()"/>
+        <button class="send" id="sendBtn" onclick="handleSend()">
+          <svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M1 9L9 5L1 1V4.5L7 5L1 5.5V9Z" fill="white"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tt" id="tt"></div>
+
+<!-- SYSTEM PROMPT MODAL -->
+<div class="sp-overlay" id="spOverlay" onclick="closePrompt(event)">
+  <div class="sp-modal">
+    <div class="sp-modal-hdr">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:22px;height:22px;border-radius:6px;background:var(--purple-dim);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--purple-text)">&#9881;</div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:#fff">System Prompt</div>
+          <div style="font-size:9.5px;color:var(--text3)">AI Visibility Strategist &middot; v1.0 prototype</div>
+        </div>
+      </div>
+      <button class="sp-close" onclick="closePrompt()">&#10005;</button>
+    </div>
+    <div class="sp-tabs-row">
+      <div class="sp-tab active" onclick="spTab('role')" id="sptab-role">Role &amp; scope</div>
+      <div class="sp-tab" onclick="spTab('schema')" id="sptab-schema">Context schema</div>
+      <div class="sp-tab" onclick="spTab('priority')" id="sptab-priority">Priority logic</div>
+      <div class="sp-tab" onclick="spTab('contract')" id="sptab-contract">Output contract</div>
+      <div class="sp-tab" onclick="spTab('constraints')" id="sptab-constraints">Constraints</div>
+    </div>
+    <div class="sp-body">
+
+      <!-- ROLE -->
+      <div class="sp-panel active" id="sppanel-role">
+        <div class="sp-section-label">Role definition</div>
+        <div class="sp-code">You are the <span class="sp-kw">AI Visibility Strategist</span> for <span class="sp-str">NovaSport</span>, embedded inside the Parcel Perform portal.
+
+<span class="sp-comment">// You are a strategic advisor, not a generic chatbot.
+// Your job is to interpret data and tell the Marketing Lead
+// what matters, why it happened, and what to do about it.</span>
+
+You have access to <span class="sp-kw">two data layers</span>:
+  <span class="sp-num">1.</span> <span class="sp-key">AI Visibility data</span> — scores, rankings, sentiment,
+     competitor positions, citation sources, prompt coverage
+     across ChatGPT, Gemini, and Perplexity
+  <span class="sp-num">2.</span> <span class="sp-key">Operational data</span> — EDD accuracy, WISMO rate,
+     carrier on-time, return friction, sourced from
+     Decision Intelligence and Logistics Experience
+
+The connection between these two layers is your primary value.
+Any other AEO tool can show visibility data. Only you can explain
+that a Perplexity ranking drop is caused by a specific operational
+failure — and tell the user which PP product to open to fix it.</div>
+
+        <div class="sp-section-label" style="margin-top:14px">Scope boundaries</div>
+        <div class="sp-code"><span class="sp-kw">IN scope</span>
+  — AI Commerce Visibility interpretation for this brand
+  — Competitive positioning across ChatGPT, Gemini, Perplexity
+  — Trust signal analysis connecting ops data to AI ranking
+  — Actionable next steps within the Parcel Perform platform
+  — AEO and content recommendations when triggered by this week's data
+  — Editorial gap diagnosis using PP's citation source data
+
+<span class="sp-kw">EDITORIAL SIGNALS — diagnose, then hand off</span>
+  PP's citation source panel shows which sources are driving citations
+  for competitors this week. The Strategist uses this to diagnose
+  editorial gaps. The fix (outreach, content production) is external —
+  name it clearly rather than staying silent or speculating.
+
+<span class="sp-kw">OUT of scope</span>
+  — Logistics operations management (refer to Logistics Experience)
+  — Generic AEO advice not grounded in this week's NovaSport data
+  — Predictions beyond the current weekly data cycle
+  — Speculation about competitor internal operations</div>
+      </div>
+
+      <!-- SCHEMA -->
+      <div class="sp-panel" id="sppanel-schema">
+        <div class="sp-section-label">Weekly context object — injected at session start</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="sp-schema-card">
+            <div class="sp-schema-hdr" style="color:var(--purple-text)">&#9670; Visibility layer</div>
+            <div class="sp-field"><span class="sp-fname">brand_name</span><span class="sp-ftype">string</span></div>
+            <div class="sp-field"><span class="sp-fname">week_of</span><span class="sp-ftype">date</span></div>
+            <div class="sp-field"><span class="sp-fname">visibility_score</span><span class="sp-ftype">float, delta</span></div>
+            <div class="sp-field"><span class="sp-fname">llm_rankings[]</span><span class="sp-ftype">platform, rank, delta</span></div>
+            <div class="sp-field"><span class="sp-fname">brand_trust_score</span><span class="sp-ftype">float, delta</span></div>
+            <div class="sp-field"><span class="sp-fname">categories[]</span><span class="sp-ftype">name, score, rank, delta</span></div>
+            <div class="sp-field"><span class="sp-fname">competitors[]</span><span class="sp-ftype">name, score, rank, delta</span></div>
+            <div class="sp-field"><span class="sp-fname">sentiment_dimensions{}</span><span class="sp-ftype">dim: score, delta</span></div>
+            <div class="sp-field"><span class="sp-fname">citation_sources[]</span><span class="sp-ftype">source, count, delta</span></div>
+            <div class="sp-field"><span class="sp-fname">active_prompts[]</span><span class="sp-ftype">text, llm_visibility</span></div>
+          </div>
+          <div class="sp-schema-card">
+            <div class="sp-schema-hdr" style="color:var(--teal-text)">&#9670; Operational layer</div>
+            <div class="sp-field"><span class="sp-fname">edd_accuracy</span><span class="sp-ftype">%, delta, market</span></div>
+            <div class="sp-field"><span class="sp-fname">wismo_rate</span><span class="sp-ftype">%, delta</span></div>
+            <div class="sp-field"><span class="sp-fname">carrier_ontime[]</span><span class="sp-ftype">carrier, %, delta, route</span></div>
+            <div class="sp-field"><span class="sp-fname">return_friction</span><span class="sp-ftype">score/100, delta</span></div>
+            <div class="sp-field"><span class="sp-fname">trustpilot_net</span><span class="sp-ftype">score, delta, vol</span></div>
+            <div class="sp-field"><span class="sp-fname">delay_rate</span><span class="sp-ftype">%, delta, carrier</span></div>
+            <div class="sp-field"><span class="sp-fname">avg_delivery_days</span><span class="sp-ftype">float, vs promised</span></div>
+          </div>
+        </div>
+        <div style="margin-top:10px;font-size:10px;color:var(--text3);padding:8px 10px;background:var(--bg3);border-radius:6px;border:0.5px solid var(--border2)">
+          The context object is assembled server-side each Monday after the weekly index run. The assistant reasons over this snapshot — it does not have live database access. If a field is null, it says so rather than speculating.
+        </div>
+      </div>
+
+      <!-- PRIORITY -->
+      <div class="sp-panel" id="sppanel-priority">
+        <div class="sp-section-label">How signals are ranked for the weekly brief</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div class="sp-priority-item">
+            <div class="sp-pnum">1</div>
+            <div>
+              <div class="sp-ptitle">Already caused a ranking change</div>
+              <div class="sp-pdesc">Signals where a visibility or ranking drop has already occurred this week. Highest urgency — the problem is live, not hypothetical.</div>
+              <div class="sp-pex">EDD accuracy fell to 67% → Perplexity ranking dropped to unranked this week</div>
+            </div>
+          </div>
+          <div class="sp-priority-item">
+            <div class="sp-pnum">2</div>
+            <div>
+              <div class="sp-ptitle">Operational signal with high downstream impact</div>
+              <div class="sp-pdesc">Ops data that hasn't yet caused a visible ranking change but is on a trajectory that will. Flagged as early warning, not crisis.</div>
+              <div class="sp-pex">Carrier on-time down 5pts — will feed into EDD accuracy and sentiment next cycle</div>
+            </div>
+          </div>
+          <div class="sp-priority-item">
+            <div class="sp-pnum">3</div>
+            <div>
+              <div class="sp-ptitle">Competitor movement requiring response</div>
+              <div class="sp-pdesc">A competitor gained ground this week through a specific mechanism the brand can respond to.</div>
+              <div class="sp-pex">Brooks gained Runner's World citations → Gemini ranking moved #4 → #2</div>
+            </div>
+          </div>
+          <div class="sp-priority-item">
+            <div class="sp-pnum">4</div>
+            <div>
+              <div class="sp-ptitle">Opportunity signal</div>
+              <div class="sp-pdesc">A category where the brand can gain ground with low competitive resistance.</div>
+              <div class="sp-pex">Trail Gear: ranked #2 on ChatGPT with only 6pt gap to #1, stable ops metrics</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:10px;font-size:10px;color:var(--text3);padding:8px 10px;background:var(--bg3);border-radius:6px;border:0.5px solid var(--border2)">
+          Surface max 4 signals per weekly brief. Never surface a signal without a recommended action.
+        </div>
+      </div>
+
+      <!-- CONTRACT -->
+      <div class="sp-panel" id="sppanel-contract">
+        <div class="sp-section-label">Required structure for every response</div>
+        <div style="display:flex;flex-direction:column;gap:1px">
+          <div class="sp-contract-row">
+            <div class="sp-contract-key">Answer first</div>
+            <div class="sp-contract-val">Answer the question asked before redirecting to a different issue. Never open with a generic observation.</div>
+          </div>
+          <div class="sp-contract-row">
+            <div class="sp-contract-key">Causal chain</div>
+            <div class="sp-contract-val">Explain why it happened using NovaSport's specific data. Use "likely" or "consistent with" for inferences — never assert causality you can't support.</div>
+          </div>
+          <div class="sp-contract-row">
+            <div class="sp-contract-key">Research citation</div>
+            <div class="sp-contract-val">When making causal claims, cite supporting research inline using [Research: source name]. Teal footnotes = external research. Purple footnotes = PP data panels.</div>
+          </div>
+          <div class="sp-contract-row">
+            <div class="sp-contract-key">Operational link</div>
+            <div class="sp-contract-val">If an operational signal supports the explanation, surface it explicitly. If no operational link exists, omit — do not fabricate one.</div>
+          </div>
+          <div class="sp-contract-row">
+            <div class="sp-contract-key">Next step</div>
+            <div class="sp-contract-val">Every response ends with exactly ONE primary next step, naming the specific PP product. No lists of options — make a recommendation.</div>
+          </div>
+          <div class="sp-contract-row">
+            <div class="sp-contract-key">Format</div>
+            <div class="sp-contract-val">Max 3 short paragraphs. No headers. No bullet lists. No bold. Plain prose only. Under 130 words.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONSTRAINTS -->
+      <div class="sp-panel" id="sppanel-constraints">
+        <div class="sp-section-label">Hard constraints</div>
+        <div style="display:flex;flex-direction:column;gap:0">
+          <div class="sp-constraint"><div class="sp-cx">&#8800;</div><div>Never assert causality you cannot support with data in the context object.</div></div>
+          <div class="sp-constraint"><div class="sp-cx">&#8800;</div><div>Never recommend actions outside the Parcel Perform platform ecosystem unless explicitly asked.</div></div>
+          <div class="sp-constraint"><div class="sp-cx">&#8800;</div><div>Never give AEO or content advice that isn't grounded in this week's NovaSport data. Generic best practices without a specific data trigger belong in PP's existing recommendation cards, not here.</div></div>
+          <div class="sp-constraint"><div class="sp-cx">&#8800;</div><div>Never surface more than one primary next step per response. Rank them and present the most urgent one.</div></div>
+          <div class="sp-constraint"><div class="sp-cx">&#8800;</div><div>Never repeat information the user can already see on the dashboard without adding interpretation.</div></div>
+          <div class="sp-constraint"><div class="sp-cx">&#8800;</div><div>Do not speculate about competitor internal operations beyond what citation and ranking data directly implies.</div></div>
+          <div class="sp-constraint" style="border-bottom:none"><div class="sp-cx">&#8800;</div><div>Tone must be direct and time-efficient. No preamble, no hedging openers, no summary restating what was just said.</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── RESEARCH KNOWLEDGE BASE ───────────────────────────────────────────────
+const RESEARCH = {
+  edd85: {
+    claim: "Brands with EDD accuracy below 85% see measurably lower AI recommendation rates",
+    source: "Parcel Perform (2025). AI Commerce Trust Signal Audit.",
+    type: "research"
+  },
+  reviews: {
+    claim: "Verified reviews on trusted platforms directly influence how LLMs weight and cite a brand in recommendations",
+    source: "AmICited / Trustpilot Research (2025).",
+    type: "research"
+  },
+  brandSearch: {
+    claim: "Brand search volume is the strongest predictor of AI citations (0.334 correlation), outweighing traditional backlinks",
+    source: "Digital Bloom (2025). Analysis of 680M+ LLM citations.",
+    type: "research"
+  },
+  platformOverlap: {
+    claim: "Only 11% of domains are cited by both ChatGPT and Perplexity — confirming each platform uses a different retrieval layer",
+    source: "Digital Bloom (2025). Cross-platform citation analysis.",
+    type: "research"
+  },
+  reddit: {
+    claim: "Reddit accounts for 40.1% of LLM citations — the single most cited domain across AI platforms",
+    source: "Discovered Labs (2025). Analysis of 150,000+ LLM citations.",
+    type: "research"
+  }
+};
+
+// ─── SYSTEM PROMPT ─────────────────────────────────────────────────────────
+const SYSTEM_PROMPT = `You are the AI Visibility Strategist for NovaSport, embedded inside the Parcel Perform portal. You are a strategic advisor for the Marketing Lead, not a generic chatbot.
+
+ROLE: Interpret weekly AI visibility data and tell the Marketing Lead what matters, why it happened, and what to do about it.
+
+THIS WEEK'S DATA CONTEXT:
+
+OVERALL:
+- Brand: NovaSport (running shoes, trail gear, apparel)
+- Overall Visibility Score: 47.3% (down 4.1% week-on-week)
+- Brand Trust Score: 61.2 (up 0.8)
+
+LLM RANKINGS — RUNNING SHOES:
+- ChatGPT: Ranked #3, stable. 6 competitors in responses. NovaSport appears for "best running shoes for marathon training" and "best cushioned running shoes" but NOT for "running shoe with fastest delivery time"
+- Gemini: Ranked #5, down from #4. Brooks jumped from #4 to #2 this week due to Runner's World editorial coverage
+- Perplexity: Dropped out of top 5 entirely — was #4 last week. Most urgent issue this week
+
+LLM RANKINGS — TRAIL GEAR:
+- ChatGPT: Ranked #2, only 6pt gap to #1 (Salomon). Low competition — only 3 brands appearing
+- Gemini: Ranked #3, stable
+- Perplexity: Ranked #4, stable
+
+LLM RANKINGS — APPAREL:
+- ChatGPT: Not in top 5
+- Gemini: Not in top 5
+- Perplexity: Not in top 5
+
+COMPETITOR BREAKDOWN — RUNNING SHOES:
+- Brooks: #1 overall at 78.4% (up from 74.1%). Gained this week via Runner's World editorial + 3 new Trustpilot reviews mentioning fast delivery
+- ASICS: #2 at 71.2%, stable. Strong on Reliability and Sustainability dimensions
+- New Balance: #3 at 64.8%, stable
+- NovaSport: #4 at 47.3%, down
+- Puma: #5 at 44.1%, trending up — gaining 2.1pts week-on-week
+
+ACTIVE PROMPTS — VISIBILITY STATUS:
+- "Best running shoes for marathon training?" → ChatGPT ✓, Gemini ✓, Perplexity ✗
+- "Where to buy lightweight trail runners in US?" → ChatGPT ✓, Gemini ✗, Perplexity ✗
+- "Running shoe with fastest delivery time?" → ChatGPT ✗, Gemini ✗, Perplexity ✗ (CRITICAL — delivery-related prompt, lost on all platforms)
+
+SENTIMENT RADAR — RUNNING SHOES (NovaSport vs competitor avg):
+- Market Performance: 72% (competitor avg: 76%)
+- Sustainability: 68% (competitor avg: 71%)
+- Reliability: 45% (competitor avg: 62%) ← WEAKEST, 17pts below avg
+- Customer Experience: 65% (competitor avg: 70%)
+- Accessibility: 74% (competitor avg: 73%) ← only dimension where NovaSport leads
+
+PRODUCT FEATURE RANKINGS — NS-Pro model:
+- Cushioning: 88%, Ranked #1
+- Lightweight: 71%, Ranked #3
+- Durability: 82%, Ranked #2
+- Delivery Speed: 45%, Ranked #5 (down) ← directly linked to AI ranking losses
+
+TRUST SIGNALS FROM OPERATIONS:
+- EDD accuracy: 67% (down 8pts) — below the critical 85% threshold
+- Carrier on-time rate US West: 71% (down 5pts) — upstream cause of EDD degradation
+- WISMO rate: 4.1% (up 0.6%) — rising, watch closely
+- Return friction score: 62/100 (flat)
+- Trustpilot net sentiment: negative this week — delivery delay complaints spiking
+
+CITATION SOURCES — RUNNING SHOES:
+- Reddit: 72 citations (strong but Gemini weights editorial more)
+- Trustpilot: 58 citations (declining sentiment this week)
+- Runner's World: 41 citations (mostly Brooks this week)
+- YouTube: 29 citations
+- Amazon: 18 citations
+
+HOW EACH LLM RETRIEVES:
+- ChatGPT: Uses Bing index. Weights editorial authority and brand search volume. More stable week-to-week
+- Perplexity: Has a freshness bias — crawls recent content aggressively. Picks up new Trustpilot reviews within days. This is why it dropped NovaSport first when delivery sentiment worsened
+- Gemini: Uses Google's organic index. Weights editorial sources (Runner's World, dedicated review sites) heavily for purchase-intent queries
+
+RESEARCH KNOWLEDGE BASE (cite these when making causal claims):
+1. [EDD Research] "Brands with EDD accuracy below 85% see measurably lower AI recommendation rates" — Parcel Perform AI Commerce Trust Signal Audit (2025)
+2. [Reviews Research] "Verified reviews on trusted platforms directly influence how LLMs weight and cite a brand in recommendations" — AmICited/Trustpilot Research (2025)
+3. [Brand Signal Research] "Brand search volume is the strongest predictor of AI citations (0.334 correlation), outweighing traditional backlinks" — Digital Bloom (2025), analysis of 680M+ citations
+4. [Platform Research] "Only 11% of domains are cited by both ChatGPT and Perplexity — each platform uses a different retrieval layer" — Digital Bloom (2025)
+5. [Reddit Research] "Reddit accounts for 40.1% of LLM citations — the single most cited domain across AI platforms" — Discovered Labs (2025), 150,000+ citation analysis
+
+PP PRODUCTS FOR HANDOFFS — what each product does and when to route there:
+- Checkout Experience → AI-powered EDD model with A/B testing. Route here when EDD accuracy is low or delivery promises are unreliable at checkout.
+- Logistics Experience → Carrier management, route optimisation, booking and cost auditing. Route here when carrier on-time rates are down or a specific route is underperforming.
+- Post-Purchase Experience → Branded tracking page (120+ config options), proactive notifications (88+ triggers), WISMO reduction. Route here for rising WISMO, poor tracking visibility, or to trigger targeted review prompts on specific sentiment dimensions.
+- Returns Experience → Self-service returns portal, automated policy enforcement, revenue recovery via store credit and exchanges. Route here when return friction is high or return sentiment is showing in AI citations.
+- AI Commerce Visibility → Weekly visibility index, LLM rankings, sentiment radar, citation sources, prompt coverage. Route here for prompt expansion, citation gap analysis, or competitive benchmarking.
+- AI Decision Intelligence → Decision-ready insights on post-purchase, checkout, returns, and logistics. This serves the ops team — do not duplicate it. Reference it when the Marketing Lead needs to brief her logistics counterpart.
+
+RESPONSE RULES:
+1. Answer the question the user actually asked first. Do not redirect to a different platform or issue unless directly relevant.
+2. Be specific to NovaSport's data. Check operational signals first — if ops are driving the issue, lead with that. Content and AEO recommendations are valid when the root cause is a citation gap, editorial coverage gap, or prompt coverage gap, but always tie them to this week's specific data.
+3. When making causal claims, cite supporting research using this exact format: [Research: source name] inline in the sentence.
+4. If there is a more urgent issue than what was asked, mention it briefly at the end — one sentence only.
+5. Always end with exactly ONE primary next step naming the specific PP product.
+6. Maximum 3 short paragraphs. No headers. No bullet lists. No bold. Plain prose only.
+7. Under 130 words total.
+8. If the root cause is editorial (competitor gained citations, content gap not tied to ops) and not traceable to PP's operational data, say so explicitly. Use PP's citation source data to show what changed, name the gap, and state that the fix is external to PP. Do not ignore editorial signals — diagnose what you can see, then clearly hand off what PP cannot fix.`;
+
+// ─── SCRIPTED RESPONSES ───────────────────────────────────────────────────
+const SCRIPTED = {
+  drop: {
+    q: "Why did Perplexity drop us?",
+    render: (chat) => {
+      addBubble(chat, `
+<p>NovaSport dropped off Perplexity's top 5 in Running Shoes this week — first time out of top 5 in 6 weeks.<span class="fn" data-t="LLM Coverage: Perplexity now shows 'Dropped — not in top 5'. Was ranked #4 last week.">1</span></p>
+<p>The root cause is operational. EDD accuracy fell to 67% this week, down 8pts — below the threshold that measurably affects AI recommendation rates.<span class="fn research" data-t="Research: Parcel Perform AI Commerce Trust Signal Audit (2025)">R1</span> Missed delivery promises generate negative Trustpilot reviews, and verified reviews directly influence how LLMs weight and cite a brand.<span class="fn research" data-t="Research: AmICited / Trustpilot Research (2025)">R2</span> Perplexity's freshness-biased crawler picks these up within days. The upstream cause is carrier on-time down 5pts on US West routes<span class="fn" data-t="Trust Signals: Carrier on-time rate 71%, down 5pts week-on-week — upstream of EDD degradation">2</span> — Logistics Experience will show which carrier is underperforming. Checkout Experience can run an A/B test on delivery promise thresholds to stabilise EDD while the carrier issue is resolved.</p>
+<p>Once EDD stabilises, there's a parallel content action: NovaSport is invisible on "running shoe with fastest delivery time" across all three LLMs.<span class="fn" data-t="Active Prompts: 'running shoe with fastest delivery time' — GPT ✗, Gemini ✗, Perplexity ✗">3</span> Displaying EDD prominently on the product and checkout pages<span class="fn" data-t="Checkout Experience: EDD widget available for product page, cart, and checkout touchpoints">4</span> would directly support ranking recovery on that prompt once delivery sentiment improves.</p>`,
+        [
+          {label:"EDD accuracy", score:"67%", trend:"↓ 8pts", impact:"High", owner:"Checkout Experience"},
+          {label:"Carrier on-time", score:"71%", trend:"↓ 5pts", impact:"High", owner:"Logistics Experience"},
+          {label:"Trustpilot sentiment", score:"↓ this wk", trend:"↑ complaints", impact:"High", owner:"Post-Purchase"}
+        ],
+        [
+          {label:"A/B test delivery promises", sub:"Checkout Experience", cls:"hb-ops"},
+          {label:"Diagnose carrier route", sub:"Logistics Experience", cls:"hb-ops"},
+          {label:"Trigger review prompt — delivery speed", sub:"Post-Purchase Experience", cls:"hb-ops"},
+          {label:"Track delivery-speed prompts", sub:"AI Commerce Visibility", cls:"hb-pp"}
+        ],
+        [
+          {num:"R1", text:"Parcel Perform AI Commerce Trust Signal Audit (2025) — EDD below 85% → measurably lower AI recommendation rates", cls:"fn-res"},
+          {num:"R2", text:"AmICited / Trustpilot Research (2025) — Verified reviews directly influence LLM citations", cls:"fn-res"},
+          {num:"1", text:"LLM Coverage panel — Perplexity: Dropped, not in top 5. Was ranked #4 last week.", cls:"fn-data"},
+          {num:"2", text:"Trust Signals — Carrier on-time 71%, down 5pts US West this week", cls:"fn-data"},
+          {num:"3", text:"Active Prompts — 'running shoe with fastest delivery time' not appearing on any LLM", cls:"fn-data"},
+          {num:"4", text:"Checkout Experience — EDD widget supports product page, cart overview, and checkout page", cls:"fn-data"}
+        ],
+        ['cLLM','cSent','cOps','mRank']
+      );
+    }
+  },
+  gemini: {
+    q: "Why did Gemini ranking slip?",
+    render: (chat) => {
+      addBubble(chat, `
+<p>Gemini moved NovaSport from #4 to #5 in Running Shoes this week — a one-position slip driven by Brooks, not by NovaSport's own decline.<span class="fn" data-t="LLM Coverage: Gemini Ranked #5, down from #4 last week">1</span> PP's citation source data shows Runner's World citations skewed heavily toward Brooks this week<span class="fn" data-t="Citation Sources panel: Runner's World — 41 citations this week, predominantly Brooks">2</span> — Gemini weights editorial sources more heavily than Reddit for purchase-intent queries.</p>
+<p>This is a content gap, not an operational one — NovaSport's ops metrics are stable on Gemini. PP can diagnose what changed in the citation landscape, but the fix is external: editorial outreach to running-specific publications like Runner's World or Runners Need. Even one placement this cycle would likely recover the #4 position. Research shows only 11% of domains are cited by both ChatGPT and Perplexity<span class="fn research" data-t="Research: Digital Bloom (2025), cross-platform citation analysis of 680M+ citations">R1</span> — Gemini's editorial weighting makes this a platform-specific problem that requires a Gemini-specific response.</p>
+<p>NovaSport has 72 Reddit citations this week<span class="fn" data-t="Citation Sources — NovaSport: Reddit 72 citations, strong community presence">3</span> but Reddit carries less weight on Gemini for purchase-intent queries than it does on Perplexity. Use AI Commerce Visibility to track which citation sources the gap is widening on week-over-week.</p>`,
+        [],
+        [
+          {label:"Track citation source gaps by LLM", sub:"AI Commerce Visibility", cls:"hb-pp"},
+          {label:"Monitor Gemini prompt coverage", sub:"AI Commerce Visibility", cls:"hb-pp"}
+        ],
+        [
+          {num:"R1", text:"Digital Bloom (2025) — Only 11% of domains cited by both ChatGPT and Perplexity; each uses a different retrieval layer", cls:"fn-res"},
+          {num:"1", text:"LLM Coverage — Gemini: Ranked #5, down from #4 last week", cls:"fn-data"},
+          {num:"2", text:"Citation Sources panel — Runner's World: 41 citations, skewed toward Brooks this week", cls:"fn-data"},
+          {num:"3", text:"Citation Sources — NovaSport: Reddit 72 citations this week", cls:"fn-data"}
+        ],
+        ['cLLM','cRank']
+      );
+    }
+  },
+  ops: {
+    q: "What ops issues are hurting us?",
+    render: (chat) => {
+      addBubble(chat, `
+<p>Two operational signals are actively degrading AI visibility this week. EDD accuracy at 67% — down 8pts, a new low this quarter<span class="fn" data-t="Trust Signals: EDD accuracy 67%, down 8pts — highest impact rating this week">1</span> — is the priority. Research confirms brands below 85% see measurably lower AI recommendation rates.<span class="fn research" data-t="Research: Parcel Perform AI Commerce Trust Signal Audit (2025)">R1</span> The upstream cause is carrier on-time dropping 5pts on US West routes<span class="fn" data-t="Trust Signals: Carrier on-time 71%, down 5pts US West">2</span> — open Logistics Experience to identify the underperforming carrier and reroute. Checkout Experience can run A/B tests on delivery promise thresholds to stabilise EDD accuracy while that fix is underway.</p>
+<p>WISMO is creeping up (4.1%, +0.6% this week).<span class="fn" data-t="Trust Signals: WISMO rate 4.1%, up 0.6% this week — watch closely">3</span> Verified reviews directly influence LLM citations<span class="fn research" data-t="Research: AmICited / Trustpilot Research (2025)">R2</span> — rising WISMO generates frustrated customer sentiment that Perplexity picks up first. Post-Purchase Experience's proactive notification triggers can reduce WISMO volume before it compounds. Return friction is flat at 62/100<span class="fn" data-t="Trust Signals: Return friction 62/100, flat week-on-week">4</span> — not critical this week but worth watching if Reliability sentiment continues to drop.</p>
+<p>Once EDD stabilises, trigger a targeted review prompt via Post-Purchase's tracking page for customers on affected US West shipments — ask specifically about delivery speed to rebuild the Reliability sentiment dimension<span class="fn" data-t="Sentiment Radar: Reliability 45%, weakest dimension, 17pts below competitor avg">5</span> driving the ranking loss.</p>`,
+        [
+          {label:"EDD accuracy", score:"67%", trend:"↓ 8pts", impact:"High", owner:"Checkout Experience"},
+          {label:"Carrier on-time", score:"71%", trend:"↓ 5pts", impact:"High", owner:"Logistics Experience"},
+          {label:"WISMO rate", score:"4.1%", trend:"↑ 0.6%", impact:"Med", owner:"Post-Purchase"},
+          {label:"Return friction", score:"62/100", trend:"flat", impact:"Low", owner:"Returns Experience"}
+        ],
+        [
+          {label:"Reroute underperforming carrier", sub:"Logistics Experience", cls:"hb-ops"},
+          {label:"A/B test delivery promise thresholds", sub:"Checkout Experience", cls:"hb-ops"},
+          {label:"Enable proactive delay notifications", sub:"Post-Purchase Experience", cls:"hb-ops"},
+          {label:"Trigger delivery-speed review prompt", sub:"Post-Purchase Experience", cls:"hb-ops"}
+        ],
+        [
+          {num:"R1", text:"Parcel Perform AI Commerce Trust Signal Audit (2025) — EDD below 85% → measurably lower AI recommendation rates", cls:"fn-res"},
+          {num:"R2", text:"AmICited / Trustpilot Research (2025) — Verified reviews directly influence LLM citations", cls:"fn-res"},
+          {num:"1", text:"Trust Signals — EDD accuracy 67%, down 8pts, new low this quarter", cls:"fn-data"},
+          {num:"2", text:"Trust Signals — Carrier on-time 71%, down 5pts US West this week", cls:"fn-data"},
+          {num:"3", text:"Trust Signals — WISMO rate 4.1%, up 0.6% this week", cls:"fn-data"},
+          {num:"4", text:"Trust Signals — Return friction 62/100, flat week-on-week", cls:"fn-data"},
+          {num:"5", text:"Sentiment Radar — Reliability 45%, weakest dimension, 17pts below competitor avg", cls:"fn-data"}
+        ],
+        ['cOps','mVis','mRank']
+      );
+    }
+  },
+  opportunity: {
+    q: "Tell me about the Trail Gear opportunity",
+    render: (chat) => {
+      addBubble(chat, `
+<p>Trail Gear is NovaSport's strongest category right now — and the gap is closing. Ranked #2 on ChatGPT with only a 6-point gap to #1 (Salomon)<span class="fn" data-t="Category data: Trail Gear #2 on ChatGPT, 6pt gap to #1 — up from 9pt gap last week">1</span>, up from a 9-point gap last week. Ops metrics are stable: Trail Gear EDD is at 84%, just above the 85% threshold linked to AI recommendation rates.<span class="fn research" data-t="Research: Parcel Perform AI Commerce Trust Signal Audit (2025) — EDD below 85% = measurably lower AI recommendation rates">R1</span></p>
+<p>The gap to close is editorial. Citation coverage in Trail Gear is thin — only 3 brands appearing in ChatGPT responses — and use-case prompts like "best trail shoes for muddy terrain" and "waterproof trail runners under $150" are largely unclaimed.<span class="fn" data-t="Active Prompts: Trail Gear — low competitor density, citation coverage gaps on use-case queries">2</span> Use AI Commerce Visibility to expand the Trail Gear prompt set and track citation source coverage week-over-week. Two or three targeted content pieces would likely push NovaSport to #1 within 2-3 weeks.</p>
+<p>Protect the operational position while building content. If Trail Gear EDD slips below 85%, use Checkout Experience's A/B testing to hold the delivery promise — the content gains reverse quickly if delivery sentiment deteriorates.<span class="fn" data-t="Checkout Experience: AI-powered EDD with A/B testing to balance speed, reliability, and conversion">3</span></p>`,
+        [],
+        [
+          {label:"Expand Trail Gear prompt coverage", sub:"AI Commerce Visibility", cls:"hb-pp"},
+          {label:"Track Trail Gear citation sources", sub:"AI Commerce Visibility", cls:"hb-pp"},
+          {label:"Monitor Trail Gear EDD", sub:"Checkout Experience", cls:"hb-ops"}
+        ],
+        [
+          {num:"R1", text:"Parcel Perform AI Commerce Trust Signal Audit (2025) — EDD below 85% threshold = measurably lower AI recommendation rates", cls:"fn-res"},
+          {num:"1", text:"Category data — Trail Gear ranked #2 on ChatGPT, 6pt gap to #1 (Salomon), improving from 9pts last week", cls:"fn-data"},
+          {num:"2", text:"Active Prompts — Trail Gear use-case queries largely unclaimed, low competitor density", cls:"fn-data"},
+          {num:"3", text:"Checkout Experience — AI-powered EDD with A/B testing to balance speed, reliability, and conversion", cls:"fn-data"}
+        ],
+        ['cRank','cLLM']
+      );
+    }
+  }
+};
+
+// ─── UI HELPERS ───────────────────────────────────────────────────────────
+function addUserMsg(chat, text) {
+  const d = document.createElement('div');
+  d.className = 'msg';
+  d.style.alignItems = 'flex-end';
+  d.innerHTML = `<div class="msg-label" style="text-align:right">You</div><div class="bubble bubble-user">${text}</div>`;
+  chat.appendChild(d);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function addTyping(chat) {
+  const d = document.createElement('div');
+  d.className = 'msg';
+  d.id = 'typing-indicator';
+  d.innerHTML = `<div class="msg-label">Strategist</div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  chat.appendChild(d);
+  chat.scrollTop = chat.scrollHeight;
+  return d;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing-indicator');
+  if(t) t.remove();
+}
+
+function addBubble(chat, html, opsRows, handoffs, fnItems, highlights) {
+  removeTyping();
+  const d = document.createElement('div');
+  d.className = 'msg';
+
+  let content = html;
+
+  // ops block
+  if(opsRows && opsRows.length > 0) {
+    const rows = opsRows.map(r => {
+      const impColor = r.impact === 'High' ? 'var(--red)' : r.impact === 'Med' ? 'var(--amber)' : 'var(--teal)';
+      const trendColor = r.trend.includes('↓') ? 'var(--red)' : r.trend.includes('↑') ? 'var(--amber)' : 'var(--text3)';
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bg4);gap:4px;">
+        <div style="font-size:9.5px;color:var(--text2);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.label}</div>
+        <div style="font-size:9px;font-family:var(--mono);color:var(--text2);flex-shrink:0">${r.score}</div>
+        <div style="font-size:9px;color:${trendColor};flex-shrink:0">${r.trend}</div>
+        <div style="font-size:8.5px;color:${impColor};flex-shrink:0;width:26px;text-align:right">${r.impact}</div>
+      </div>`;
+    }).join('');
+    const header = `<div style="display:flex;align-items:center;justify-content:space-between;padding:0 0 4px;border-bottom:1px solid var(--border2);gap:4px;margin-bottom:2px;">
+      <div style="font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;flex:1">Signal</div>
+      <div style="font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;flex-shrink:0">Score</div>
+      <div style="font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;flex-shrink:0;margin-left:4px">Trend</div>
+      <div style="font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;flex-shrink:0;width:26px;text-align:right">Impact</div>
+    </div>`;
+    content += `<div class="ops-block">
+      <div class="ops-label"><div style="width:5px;height:5px;border-radius:50%;background:var(--teal);flex-shrink:0"></div>Operational trust signals — PP data layer</div>
+      ${header}${rows}
+    </div>`;
+  }
+
+  // handoffs
+  if(handoffs && handoffs.length > 0) {
+    const btns = handoffs.map(h => `<div class="hb ${h.cls}"><div><div>${h.label}</div><div class="hb-sub">${h.sub}</div></div><div class="hb-arr">&#8594;</div></div>`).join('');
+    content += `<div class="handoff"><div class="handoff-label">Recommended actions</div>${btns}</div>`;
+  }
+
+  // footnotes
+  if(fnItems && fnItems.length > 0) {
+    const fns = fnItems.map(f => `<div class="fn-item"><div class="fn-num ${f.cls}">${f.num}</div><div>${f.text}</div></div>`).join('');
+    content += `<div class="fn-list">${fns}</div>`;
+  }
+
+  d.innerHTML = `<div class="msg-label">Strategist</div><div class="bubble">${content}</div>`;
+  chat.appendChild(d);
+  chat.scrollTop = chat.scrollHeight;
+
+  if(highlights) pulseCards(highlights);
+  setupTooltips();
+}
+
+function pulseCards(ids) {
+  ids.forEach((id,i) => setTimeout(() => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.classList.remove('pulse-anim');
+    void el.offsetWidth;
+    el.classList.add('pulse-anim');
+  }, i * 120));
+}
+
+function setupTooltips() {
+  const tt = document.getElementById('tt');
+  document.querySelectorAll('.fn:not([data-tt])').forEach(el => {
+    el.dataset.tt = '1';
+    el.addEventListener('mouseenter', e => {
+      tt.textContent = el.dataset.t;
+      tt.classList.add('show');
+      const r = el.getBoundingClientRect();
+      tt.style.left = Math.max(0, r.left - 95) + 'px';
+      tt.style.top = (r.top - 50) + 'px';
+    });
+    el.addEventListener('mouseleave', () => tt.classList.remove('show'));
+  });
+}
+
+// ─── SCRIPTED LOAD ────────────────────────────────────────────────────────
+function load(key) {
+  const r = SCRIPTED[key];
+  if(!r) return;
+  const chat = document.getElementById('chat');
+  addUserMsg(chat, r.q);
+  const typing = addTyping(chat);
+  setTimeout(() => r.render(chat), 600 + Math.random() * 400);
+}
+
+// ─── LIVE API ─────────────────────────────────────────────────────────────
+async function sendLive(text) {
+  const chat = document.getElementById('chat');
+  const btn = document.getElementById('sendBtn');
+  const inp = document.getElementById('inp');
+
+  addUserMsg(chat, text);
+  inp.value = '';
+  btn.disabled = true;
+  addTyping(chat);
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT,
+        messages: [{role:"user", content: text}]
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error?.message || `API error ${res.status}`);
+    removeTyping();
+
+    const raw = data.content?.map(c => c.text || '').join('') || "I couldn't generate a response. Please try again.";
+
+    // Clean markdown and format for chat bubble
+    let cleaned = raw
+      // Strip markdown headers
+      .replace(/^#{1,3}\s+/gm, '')
+      // Strip bold/italic markers
+      .replace(/\*\*(.*?)\*\*/g, '$1')
+      .replace(/\*(.*?)\*/g, '$1')
+      // Convert [Research: source] to teal inline chip
+      .replace(/\[Research:\s*([^\]]+)\]/g, (_, src, offset, str) => {
+        // Count how many research citations have appeared so far to number them
+        const prev = str.slice(0, offset).match(/\[Research:/g) || [];
+        const num = prev.length + 1;
+        return `<span class="fn research" data-t="Research: ${src.trim()}">R${num}</span>`;
+      })
+      // Strip bare numbered citations like [1], [2], [3]
+      .replace(/\[\d+\]/g, '')
+      // Strip horizontal rules
+      .replace(/^[-*]{3,}$/gm, '')
+      // Trim excess blank lines
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+
+    // Split into paragraphs and render
+    const paras = cleaned.split(/\n\n+/).filter(p => p.trim()).slice(0, 3); // max 3 paras
+    const html = paras.map(p => `<p>${p.replace(/\n/g,'<br>')}</p>`).join('');
+
+    const d = document.createElement('div');
+    d.className = 'msg';
+    d.innerHTML = `<div class="msg-label">Strategist <span style="font-size:8px;color:var(--teal-text);background:var(--teal-dim);padding:1px 5px;border-radius:3px;margin-left:4px">LIVE</span></div><div class="bubble">${html}</div>`;
+    chat.appendChild(d);
+    chat.scrollTop = chat.scrollHeight;
+    setupTooltips();
+
+  } catch(err) {
+    removeTyping();
+    const d = document.createElement('div');
+    d.className = 'msg';
+    d.innerHTML = `<div class="msg-label">Strategist</div><div class="bubble" style="color:var(--red)">Error: ${err.message}. Please try again.</div>`;
+    chat.appendChild(d);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  btn.disabled = false;
+}
+
+function openPrompt() {
+  document.getElementById('spOverlay').classList.add('show');
+}
+
+function closePrompt(e) {
+  if(!e || e.target === document.getElementById('spOverlay')) {
+    document.getElementById('spOverlay').classList.remove('show');
+  }
+}
+
+function spTab(name) {
+  ['role','schema','priority','contract','constraints'].forEach(t => {
+    document.getElementById('sptab-'+t).classList.toggle('active', t===name);
+    document.getElementById('sppanel-'+t).classList.toggle('active', t===name);
+  });
+}
+
+function toggleAsst() {
+  const panel = document.querySelector('.asst');
+  const btn = document.getElementById('asstToggle');
+  const isOpen = panel.classList.toggle('open');
+  btn.style.background = isOpen ? '#3a2a70' : '';
+  btn.style.borderColor = isOpen ? '#6a5fc0' : '';
+}
+
+function switchTab(name) {
+  ['brand','product','trust'].forEach(t => {
+    document.getElementById('panel-'+t).style.display = t===name ? 'block' : 'none';
+    document.getElementById('tab-'+t).classList.toggle('active', t===name);
+  });
+}
+
+function handleSend() {
+  const inp = document.getElementById('inp');
+  const v = inp.value.trim();
+  if(!v) return;
+  inp.value = '';
+
+  // Only route to scripted if it's a very exact match to the signal card questions
+  const lower = v.toLowerCase();
+  const exactPerplexity = lower === 'why did perplexity drop us?';
+  const exactGemini = lower === 'why did gemini ranking slip?' || lower === 'why did gemini slip?';
+  const exactOps = lower === 'what ops issues are hurting us?';
+  const exactTrail = lower === 'tell me about the trail gear opportunity';
+
+  if(exactPerplexity) { load('drop'); return; }
+  if(exactGemini) { load('gemini'); return; }
+  if(exactOps) { load('ops'); return; }
+  if(exactTrail) { load('opportunity'); return; }
+
+  // Everything else — including all real questions — goes live
+  sendLive(v);
+}
+</script>
+</body>
+</html>
